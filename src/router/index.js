@@ -8,12 +8,12 @@ const routes = [
     component: () => import(/* webpackChunkName: "boards" */ '../views/HomeView.vue')
   },
   {
-    path: '/boards/free/list',
+    path: '/boards/free/list/',
     name: 'ListView',
-    component: () => import(/* webpackChunkName: "boards" */ '../views/ListView.vue')
+    component: () => import(/* webpackChunkName: "boards" */ '../views/ListView.vue'),
   },
   {
-    path: '/boards/free/view',
+    path: '/boards/free/view/:boardId',
     name: 'InfoView',
     component: () => import(/* webpackChunkName: "boards" */ '../views/InfoView.vue')
   }

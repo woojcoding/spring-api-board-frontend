@@ -1,25 +1,36 @@
 <template>
   <div>
     <h1>자유게시판 - 목록</h1>
-    <form action="/boards/free/list" method="get">
+    <form>
       <table class="search">
         <tr>
           <td>등록일</td>
-          <td><input type="date" name="startDate"> ~ <input type="date" name="endDate"></td>
           <td>
-            <select name="category">
+            <input type="date" name="startDate" v-model="boardSearch.startDate"/>
+            ~
+            <input type="date" name="endDate" v-model="boardSearch.endDate"/>
+          </td>
+          <td>
+            <select name="category" v-model="boardSearch.category">
               <option value="ALL">전체 카테고리</option>
-              <option></option>
+              <option v-for="category in categoryDtoList"
+                      :key="category.categoryId" :value="category.categoryId">
+                {{ category.categoryName }}
+              </option>
             </select>
           </td>
-          <td> <input type="text" name="keyword" placeholder="검색어를 입력해 주세요.(제목 + 작성자 + 내용)"></td>
-          <td><button type="submit">검색</button></td>
+          <td><input type="text" name="keyword" v-model="boardSearch.keyword"
+                     placeholder="검색어를 입력해 주세요.(제목 + 작성자 + 내용)"></td>
+          <td>
+            <button @click="search">검색</button>
+          </td>
         </tr>
       </table>
-    </form><br>
-    총 &nbsp <span>0</span> &nbsp 건
+    </form>
+    <br>
+    총 &nbsp <span>{{ totalBoardCount }}</span> &nbsp 건
     <table class="boardList">
-      <tr>|
+      <tr>
         <td>카테고리</td>
         <td>첨부</td>
         <td>제목</td>
@@ -28,17 +39,62 @@
         <td>등록 일시</td>
         <td>수정 일시</td>
       </tr>
-      <tr >
-        <td>카테고리</td>
-        <td>첨부여부</td>
+      <tr v-for="board in boardResponseDtoList" v-bind:key="board.boardId">
+        <td>{{ board.categoryName }}</td>
+        <td>{{ board.attached ? '첨부됨' : '없음' }}</td>
         <td>
-          <a href="boards/free/view">제목</a>
+          <a v-on:click="$event => href(board)">{{ board.title }}</a>
         </td>
-        <td>글쓴이</td>
-        <td>조회수</td>
-        <td>등록일시</td>
-        <td>수정일시</td>
+        <td>{{ board.writer }}</td>
+        <td>{{ board.views }}</td>
+        <td>{{ board.createdAt }}</td>
+        <td>{{ board.modifiedAt ? board.modifiedAt : '-' }}</td>
       </tr>
     </table>
   </div>
 </template>
+
+<script>
+import axios from "axios";
+
+export default {
+  name: 'ListView',
+  data() {
+    return {
+      boardSearch: {startDate: '', endDate: '', category: '', keyword: ''},
+      boardResponseDtoList: [],
+      totalBoardCount: 0,
+      categoryDtoList: []
+    }
+  },
+  created() {
+    this.getData();
+  },
+  methods: {
+    getData() {
+      const boardSearch = this.$route.query;
+
+      axios
+          .get("http://localhost:8080/api/v1/boards/free/list", {
+            params: boardSearch
+          })
+          .then((response) => {
+            this.boardSearch = boardSearch;
+            this.boardResponseDtoList = response.data.boardResponseDtoList;
+            this.totalBoardCount = response.data.totalBoardCount;
+            this.categoryDtoList = response.data.categoryDtoList;
+          })
+          .catch((error) => {
+            console.log(error)
+          });
+    },
+    href(board) {
+      this.$router.push({name: 'InfoView', params: {boardId: board.boardId}});
+    },
+    search() {
+      const queryParams = new URLSearchParams(boardSearch).toString();
+      this.$router.push({name: 'ListView', query: queryParams});
+    }
+  }
+}
+</script>
