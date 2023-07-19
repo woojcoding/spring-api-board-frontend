@@ -4,7 +4,7 @@
     <table>
       <tr>
         <td>{{ writer }}</td>
-        <td>{{ createdAt }}</td>
+        <td>등록일시: {{ createdAt }} 수정일시: {{ modifiedAt ? modifiedAt : '-' }}</td>
         <td>{{ modifiedAt }}</td>
       </tr>
       <tr>
@@ -28,16 +28,13 @@
           <span>{{ comment.content }}</span>
         </td>
       </tr>
-      <form method="post">
-        <tr class="commentEnd">
-          <td colspan="3">
-            <textarea rows="2" cols="250"></textarea>
-          </td>
-          <td>
-            <button type="submit">등록</button>
-          </td>
-        </tr>
-      </form>
+    </table>
+    <form @submit.prevent>
+      <textarea rows="2" cols="250" placeholder="댓글을 입력해 주세요."
+                v-model="comment.content"></textarea>
+      <button @click="postComment">등록</button>
+    </form>
+    <table>
       <td class="buttons" colspan="4">
         <router-link to="/boards/free/list">
           <button>목록</button>
@@ -57,7 +54,8 @@ export default {
   name: 'InfoView',
   data() {
     return {
-      boardId: null,
+      comment: {content: ''},
+      boardId: '',
       writer: '',
       title: '',
       content: '',
@@ -92,6 +90,20 @@ export default {
           })
           .catch((error) => {
             console.log(error)
+          });
+    },
+    postComment() {
+      axios
+          .post(`http://localhost:8080/api/v1/boards/free/view/${this.boardId}/comments`, this.comment)
+          .then((response) => {
+            if (response.status === 201) {
+              this.getData();
+            } else {
+              alert("댓글 작성 실패");
+            }
+          })
+          .catch((error) => {
+            console.log(error);
           });
     }
   }
