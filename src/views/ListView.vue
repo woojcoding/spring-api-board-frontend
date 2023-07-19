@@ -65,7 +65,7 @@ export default {
       boardResponseDtoList: [],
       totalBoardCount: 0,
       categoryDtoList: []
-    }
+    };
   },
   created() {
     this.getData();
