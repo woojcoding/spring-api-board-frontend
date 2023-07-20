@@ -16,6 +16,11 @@ const routes = [
     path: '/boards/free/view/:boardId',
     name: 'InfoView',
     component: () => import(/* webpackChunkName: "boards" */ '../views/InfoView.vue')
+  },
+  {
+    path: '/board/free/write/',
+    name: 'WriteView',
+    component: () => import(/* webpackChunkName: "boards" */ '../views/WriteView.vue')
   }
 ]
 

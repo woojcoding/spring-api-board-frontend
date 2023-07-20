@@ -1,18 +1,19 @@
 <template>
   <div>
     <h1>자유게시판 - 목록</h1>
-    <form>
+    <form >
       <table class="search">
         <tr>
           <td>등록일</td>
           <td>
-            <input type="date" name="startDate" v-model="boardSearch.startDate"/>
+            <input type="date" name="startDate"
+                   v-model="boardSearch.startDate"/>
             ~
             <input type="date" name="endDate" v-model="boardSearch.endDate"/>
           </td>
           <td>
             <select name="category" v-model="boardSearch.category">
-              <option value="ALL">전체 카테고리</option>
+              <option :value="'all'" selected>전체 카테고리</option>
               <option v-for="category in categoryDtoList"
                       :key="category.categoryId" :value="category.categoryId">
                 {{ category.categoryName }}
@@ -51,6 +52,9 @@
         <td>{{ board.modifiedAt ? board.modifiedAt : '-' }}</td>
       </tr>
     </table>
+    <router-link to="/board/free/write">
+      <button>등록</button>
+    </router-link>
   </div>
 </template>
 
@@ -94,7 +98,7 @@ export default {
     search() {
       const queryParams = new URLSearchParams(boardSearch).toString();
       this.$router.push({name: 'ListView', query: queryParams});
-    }
+    },
   }
 }
 </script>
