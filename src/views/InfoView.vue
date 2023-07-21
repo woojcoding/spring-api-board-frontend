@@ -3,25 +3,27 @@
     <h2>게시판 - 보기</h2>
     <table>
       <tr>
-        <td>{{ writer }}</td>
-        <td>등록일시: {{ createdAt }} 수정일시: {{ modifiedAt ? modifiedAt : '-' }}</td>
-        <td>{{ modifiedAt }}</td>
+        <td>{{ boardData.writer }}</td>
+        <td>등록일시: {{ boardData.createdAt }} 수정일시:
+          {{ boardData.modifiedAt ? boardData.modifiedAt : '-' }}
+        </td>
+        <td>{{ boardData.modifiedAt }}</td>
       </tr>
       <tr>
-        <td colspan="3">[{{ categoryName }}] {{ title }}</td>
-        <td> 조회수: {{ views }}</td>
+        <td colspan="3">[{{ boardData.categoryName }}] {{ title }}</td>
+        <td> 조회수: {{ boardData.views }}</td>
       </tr>
       <tr>
-        <td colspan="4">{{ content }}</td>
+        <td colspan="4">{{ boardData.content }}</td>
       </tr>
-      <tr v-for="file in fileDtoList" v-bind:key="file.fileId">
+      <tr v-for="file in boardData.fileDtoList" v-bind:key="file.fileId">
         <td colspan="4">
           <a @click="downloadFile(file.fileId)">
             <span>{{ file.originalName }}</span>
           </a>
         </td>
       </tr>
-      <tr v-for="(comment, index) in commentList" :key="index">
+      <tr v-for="(comment, index) in boardData.commentList" :key="index">
         <td colspan="4">
           <span>{{ comment.createdAt }}</span>
           <br>
@@ -36,12 +38,10 @@
     </form>
     <table>
       <td class="buttons" colspan="4">
-        <router-link to="/boards/free/list">
-          <button>목록</button>
-        </router-link>
-        <a>
+        <button @click="list">목록</button>
+        <router-link to="/board/free/modify">
           <button>수정</button>
-        </a>
+        </router-link>
         <button id="deleteButton">삭제</button>
       </td>
     </table>
@@ -49,22 +49,15 @@
 </template>
 <script>
 import axios from "axios";
+import store from "@/store/index"
+import router from "@/router";
 
 export default {
   name: 'InfoView',
   data() {
     return {
-      comment: {content: ''},
-      boardId: '',
-      writer: '',
-      title: '',
-      content: '',
-      views: '',
-      createdAt: '',
-      modifiedAt: '',
-      categoryName: '',
-      commentList: [], // 댓글 List
-      fileDtoList: [], // 파일 List
+      boardData: {},
+      comment: {content: ''}
     };
   },
   created() {
@@ -77,16 +70,11 @@ export default {
       axios
           .get(`http://localhost:8080/api/v1/boards/free/view/${boardId}`)
           .then((response) => {
-            this.boardId = response.data.boardId;
-            this.writer = response.data.writer;
-            this.title = response.data.title;
-            this.content = response.data.content;
-            this.views = response.data.views;
-            this.createdAt = response.data.createdAt;
-            this.modifiedAt = response.data.modifiedAt;
-            this.categoryName = response.data.categoryName;
-            this.commentList = response.data.commentList;
-            this.fileDtoList = response.data.fileDtoList;
+            sessionStorage.setItem('setBoardData', JSON.stringify(response.data));
+
+            store.commit('setBoardData', response.data);
+
+            this.boardData = this.$store.state.boardData;
           })
           .catch((error) => {
             console.log(error)
@@ -136,6 +124,11 @@ export default {
           .catch((error) => {
             console.log(error);
           })
+    },
+    list() {
+      this.$store.commit('setBoardData', {});
+
+      this.$router.push({name: 'ListView'});
     }
   }
 }

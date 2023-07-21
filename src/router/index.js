@@ -1,6 +1,5 @@
 import { createRouter, createWebHistory } from 'vue-router'
 
-
 const routes = [
   {
     path: '/home',
@@ -21,6 +20,12 @@ const routes = [
     path: '/board/free/write/',
     name: 'WriteView',
     component: () => import(/* webpackChunkName: "boards" */ '../views/WriteView.vue')
+  },
+  {
+    path: '/board/free/modify',
+    name: 'ModifyView',
+    component: () => import(/* webpackChunkName: "boards" */ '../views/ModifyView.vue'),
+    props: true
   }
 ]
 

@@ -60,6 +60,7 @@
 
 <script>
 import axios from "axios";
+import store from "@/store/index"
 
 export default {
   name: 'ListView',
@@ -72,6 +73,10 @@ export default {
     };
   },
   created() {
+    this.$store.commit('setBoardData', {});
+
+    sessionStorage.removeItem('setBoardData')
+
     this.getData();
   },
   methods: {

@@ -2,10 +2,18 @@
   <nav>
     <router-link to="/home">Home</router-link> |
     <router-link to="/boards/free/list">BoardList</router-link> |
-    <router-link to="/boards/free/view">BoardInfo</router-link>
+    <router-link to="/boards/free/view">BoardInfo</router-link> |
+    <router-link to="/board/free/write">BoardWrite</router-link>
   </nav>
   <router-view/>
 </template>
+<script>
+export default {
+  created() {
+    this.$store.dispatch('loadFromSessionStorage');
+  },
+};
+</script>
 
 <style>
 #app {
