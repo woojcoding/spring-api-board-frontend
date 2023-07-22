@@ -48,8 +48,8 @@
         </td>
         <td>{{ board.writer }}</td>
         <td>{{ board.views }}</td>
-        <td>{{ board.createdAt }}</td>
-        <td>{{ board.modifiedAt ? board.modifiedAt : '-' }}</td>
+        <td>{{ formatDate(board.createdAt) }}</td>
+        <td>{{ board.modifiedAt ? formatDate(board.modifiedAt) : '-' }}</td>
       </tr>
     </table>
     <!-- 페이징 버튼 -->
@@ -164,6 +164,9 @@ export default {
       const queryParams = new URLSearchParams(boardSearch).toString();
       this.$router.push({name: 'ListView', query: queryParams});
     },
+    formatDate(dateTimeStr) {
+      return dateTimeStr.slice(0, 16);
+    }
   }
 }
 </script>

@@ -4,13 +4,12 @@
     <table>
       <tr>
         <td>{{ boardData.writer }}</td>
-        <td>등록일시: {{ boardData.createdAt }} 수정일시:
-          {{ boardData.modifiedAt ? boardData.modifiedAt : '-' }}
+        <td>등록일시: {{ formatDate(boardData.createdAt) }} 수정일시:
+          {{ boardData.modifiedAt ? formatDate(boardData.modifiedAt) : '-' }}
         </td>
-        <td>{{ boardData.modifiedAt }}</td>
       </tr>
       <tr>
-        <td colspan="3">[{{ boardData.categoryName }}] {{ title }}</td>
+        <td colspan="3">[{{ boardData.categoryName }}] {{ boardData.title }}</td>
         <td> 조회수: {{ boardData.views }}</td>
       </tr>
       <tr>
@@ -71,7 +70,10 @@ export default {
   name: 'InfoView',
   data() {
     return {
-      boardData: {},
+      boardData: {
+        createdAt: '',
+        modifiedAt: '',
+      },
       comment: {content: ''},
       modalOpen: false,
       inputPassword: ''
@@ -175,6 +177,9 @@ export default {
               console.error(error);
             }
           });
+    },
+    formatDate(dateTimeStr) {
+      return dateTimeStr.slice(0, 16);
     }
   }
 }

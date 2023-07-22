@@ -10,11 +10,11 @@
         </tr>
         <tr>
           <th>등록 일시</th>
-          <td>{{ boardData.createdAt }}</td>
+          <td>{{ formatDate(boardData.createdAt) }}</td>
         </tr>
         <tr>
           <th>수정 일시</th>
-          <td>{{ boardData.modifiedAt ? boardData.modifiedAt : '-' }}</td>
+          <td>{{ boardData.modifiedAt ? formatDate(boardData.modifiedAt) : '-' }}</td>
         </tr>
         <tr>
           <th>조회수</th>
@@ -102,7 +102,10 @@ export default {
   name: 'ModifyView',
   data() {
     return {
-      boardData: {},
+      boardData: {
+        createdAt: '',
+        modifiedAt: ''
+      },
       boardUpdateDto: {
         password: '',
         files: [],
@@ -272,6 +275,9 @@ export default {
       }
 
       return true;
+    },
+    formatDate(dateTimeStr) {
+      return dateTimeStr.slice(0, 16);
     }
   }
 }
