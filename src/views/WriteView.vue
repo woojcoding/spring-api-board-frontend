@@ -7,7 +7,7 @@
           <th>카테고리</th>
           <td colspan="2">
             <select name="categoryId" v-model="boardPostRequestDto.categoryId">
-              <option :value="'all'" selected>카테고리 선택</option>
+              <option :value="'ALL'" selected>카테고리 선택</option>
               <option v-for="category in categoryDtoList"
                       :key="category.categoryId" :value="category.categoryId">
                 {{ category.categoryName }}
@@ -81,7 +81,7 @@ export default {
     return {
       categoryDtoList: [],
       boardPostRequestDto: {
-        categoryId: 'all',
+        categoryId: 'ALL',
         writer: '',
         password: '',
         rePassword: '',

@@ -1,7 +1,7 @@
 <template>
   <div>
     <h1>자유게시판 - 목록</h1>
-    <form >
+    <form>
       <table class="search">
         <tr>
           <td>등록일</td>
@@ -13,7 +13,7 @@
           </td>
           <td>
             <select name="category" v-model="boardSearch.category">
-              <option :value="'all'" selected>전체 카테고리</option>
+              <option :value="'ALL'" selected>전체 카테고리</option>
               <option v-for="category in categoryDtoList"
                       :key="category.categoryId" :value="category.categoryId">
                 {{ category.categoryName }}
@@ -52,6 +52,18 @@
         <td>{{ board.modifiedAt ? board.modifiedAt : '-' }}</td>
       </tr>
     </table>
+    <!-- 페이징 버튼 -->
+    <div class="pagination">
+      <a v-if="currentPage > 1" @click="changePage(1)">&lt;&lt;</a>
+      <a v-if="currentPage > 1"
+         @click="changePage(Math.max(startPage - pageLimit, 1))">&lt;</a>
+      <a v-for="page in pages" :key="page" @click="changePage(page)">
+        {{ page }}</a>
+      <a v-if="currentPage < pageCount"
+         @click="changePage(Math.min(startPage + pageLimit, pageCount))">&gt;</a>
+      <a v-if="currentPage < pageCount"
+         @click="changePage(pageCount)">&gt;&gt;</a>
+    </div>
     <router-link to="/board/free/write">
       <button>등록</button>
     </router-link>
@@ -66,10 +78,21 @@ export default {
   name: 'ListView',
   data() {
     return {
-      boardSearch: {startDate: '', endDate: '', category: '', keyword: ''},
+      boardSearch: {
+        startDate: '',
+        endDate: '',
+        category: '',
+        keyword: '',
+        pageNum: ''
+      },
       boardResponseDtoList: [],
       totalBoardCount: 0,
-      categoryDtoList: []
+      categoryDtoList: [],
+      currentPage: 1,
+      pageSize: 10,
+      pageLimit: 10,
+      startPage: 1,
+      endPage: 1,
     };
   },
   created() {
@@ -78,6 +101,30 @@ export default {
     sessionStorage.removeItem('setBoardData')
 
     this.getData();
+  },
+  computed: {
+    pageCount() {
+      // 총 페이지 수를 계산하여 반환
+      return Math.ceil(this.totalBoardCount / this.pageSize);
+    },
+    pages() {
+      // 현재 페이지를 중심으로 페이징 버튼에 표시할 페이지 번호들을 계산하여 반환
+      this.startPage = Math.floor((this.currentPage - 1) / this.pageLimit) * this.pageLimit + 1;
+
+      this.endPage = this.startPage + this.pageLimit - 1;
+
+      const pageCount = Math.ceil(this.totalBoardCount / this.pageSize);
+
+      if (this.endPage > pageCount) {
+        this.endPage = pageCount
+      }
+
+      const pages = [];
+      for (let i = this.startPage; i <= this.endPage; i++) {
+        pages.push(i);
+      }
+      return pages;
+    }
   },
   methods: {
     getData() {
@@ -96,6 +143,11 @@ export default {
           .catch((error) => {
             console.log(error)
           });
+    },
+    changePage(page) {
+      this.boardSearch.pageNum = page;
+      this.currentPage = page;
+      this.getData();
     },
     href(board) {
       this.$router.push({name: 'InfoView', params: {boardId: board.boardId}});
