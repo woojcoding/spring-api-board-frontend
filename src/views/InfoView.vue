@@ -42,22 +42,38 @@
         <router-link to="/board/free/modify">
           <button>수정</button>
         </router-link>
-        <button id="deleteButton">삭제</button>
+        <button v-on:click="modalOpen = true">삭제</button>
       </td>
     </table>
+    <div v-if="modalOpen === true" class="modal-container">
+      <form @submit.prevent>
+        <table>
+          <tr>
+            <td>비밀번호</td>
+            <td>
+              <input type="password" v-model="inputPassword"
+                     placeholder="비밀번호를 입력해 주세요">
+            </td>
+          </tr>
+        </table>
+        <button v-on:click="modalOpen = false">취소</button>
+        <button @click="deleteBoard">확인</button>
+      </form>
+    </div>
   </div>
 </template>
 <script>
 import axios from "axios";
 import store from "@/store/index"
-import router from "@/router";
 
 export default {
   name: 'InfoView',
   data() {
     return {
       boardData: {},
-      comment: {content: ''}
+      comment: {content: ''},
+      modalOpen: false,
+      inputPassword: ''
     };
   },
   created() {
@@ -129,7 +145,49 @@ export default {
       this.$store.commit('setBoardData', {});
 
       this.$router.push({name: 'ListView'});
+    },
+    deleteBoard() {
+      axios
+          .delete(`http://localhost:8080/api/v1/board/free/delete/${this.boardData.boardId}`,{
+            params: {password: this.inputPassword}})
+          .then((response) => {
+            console.log(response.status)
+            if (response.status === 200) {
+              this.$router.push({name: 'ListView'});
+            }
+          })
+          .catch((error) => {
+            // 유효성 검증 실패시
+            if (error.response && error.response.status === 400) {
+              let alertMessage = "서버측 유효성 검증 오류:\n\n";
+
+              error.response.data.forEach((message, index) => {
+                alertMessage += `${index + 1}. ${message}\n`;
+              });
+
+              alert(alertMessage);
+            } else {
+              // 그 외 서버와의 통신 오류 처리
+              alert("서버와 통신 중 오류가 발생했습니다.");
+
+              console.error(error);
+            }
+          });
     }
   }
 }
 </script>
+<style>
+.modal-container {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: rgba(0, 0, 0, 0.5);
+  z-index: 9999;
+}
+</style>

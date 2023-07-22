@@ -2,11 +2,6 @@ import { createRouter, createWebHistory } from 'vue-router'
 
 const routes = [
   {
-    path: '/home',
-    name: 'HomeView',
-    component: () => import(/* webpackChunkName: "boards" */ '../views/HomeView.vue')
-  },
-  {
     path: '/boards/free/list/',
     name: 'ListView',
     component: () => import(/* webpackChunkName: "boards" */ '../views/ListView.vue'),

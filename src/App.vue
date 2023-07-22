@@ -1,9 +1,6 @@
 <template>
   <nav>
-    <router-link to="/home">Home</router-link> |
-    <router-link to="/boards/free/list">BoardList</router-link> |
-    <router-link to="/boards/free/view">BoardInfo</router-link> |
-    <router-link to="/board/free/write">BoardWrite</router-link>
+    <router-link to="/boards/free/list">BoardList</router-link>
   </nav>
   <router-view/>
 </template>

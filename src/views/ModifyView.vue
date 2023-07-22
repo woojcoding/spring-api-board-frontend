@@ -14,7 +14,7 @@
         </tr>
         <tr>
           <th>수정 일시</th>
-          <td>{{ boardData.modifiedAt }}</td>
+          <td>{{ boardData.modifiedAt ? boardData.modifiedAt : '-' }}</td>
         </tr>
         <tr>
           <th>조회수</th>
@@ -79,7 +79,9 @@
         <tr>
           <td colspan="2">
             <div class="button-left">
-              <a>취소</a>
+              <router-link :to="`/boards/free/view/${this.boardData.boardId}`">
+                <button>취소</button>
+              </router-link>
             </div>
             <div class="button-right">
               <button @click="update" class="button">저장
