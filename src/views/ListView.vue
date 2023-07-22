@@ -44,7 +44,7 @@
         <td>{{ board.categoryName }}</td>
         <td>{{ board.attached ? '첨부됨' : '없음' }}</td>
         <td>
-          <a v-on:click="$event => href(board)">{{ board.title }}</a>
+          <a v-on:click="$event => info(board)">{{ board.title }}</a>
         </td>
         <td>{{ board.writer }}</td>
         <td>{{ board.views }}</td>
@@ -64,7 +64,7 @@
       <a v-if="currentPage < pageCount"
          @click="changePage(pageCount)">&gt;&gt;</a>
     </div>
-    <router-link to="/board/free/write">
+    <router-link :to="{path: '/board/free/write', query: boardSearch}">
       <button>등록</button>
     </router-link>
   </div>
@@ -101,6 +101,10 @@ export default {
     sessionStorage.removeItem('setBoardData')
 
     this.getData();
+
+    if (this.$route.query.pageNum) {
+      this.currentPage = this.$route.query.pageNum;
+    }
   },
   computed: {
     pageCount() {
@@ -149,8 +153,12 @@ export default {
       this.currentPage = page;
       this.getData();
     },
-    href(board) {
-      this.$router.push({name: 'InfoView', params: {boardId: board.boardId}});
+    info(board) {
+      this.$router.push({
+        name: 'InfoView',
+        params: {boardId: board.boardId},
+        query: this.boardSearch
+      });
     },
     search() {
       const queryParams = new URLSearchParams(boardSearch).toString();

@@ -62,7 +62,7 @@
                   </a>
                   삭제
                   <input type="checkbox"
-                           @change="handleFileDelete(file.fileId)">
+                         @change="handleFileDelete(file.fileId)">
                 </td>
               </tr>
               <!-- 추가 입력란 -->
@@ -79,7 +79,9 @@
         <tr>
           <td colspan="2">
             <div class="button-left">
-              <router-link :to="`/boards/free/view/${this.boardData.boardId}`">
+              <router-link
+                  :to="{ path: `/boards/free/view/${this.boardData.boardId}`,
+                  query: this.$route.query }">
                 <button>취소</button>
               </router-link>
             </div>
@@ -95,7 +97,6 @@
 </template>
 <script>
 import axios from "axios";
-import router from "@/router";
 
 export default {
   name: 'ModifyView',
@@ -185,7 +186,10 @@ export default {
             if (response.status === 200) {
               const boardId = response.data;
 
-              this.$router.push({name: 'InfoView', params: {boardId: this.boardData.boardId}});
+              this.$router.push({
+                name: 'InfoView',
+                params: {boardId: this.boardData.boardId}
+              });
             }
           })
           .catch((error) => {

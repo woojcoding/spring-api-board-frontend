@@ -9,7 +9,8 @@ const routes = [
   {
     path: '/boards/free/view/:boardId',
     name: 'InfoView',
-    component: () => import(/* webpackChunkName: "boards" */ '../views/InfoView.vue')
+    component: () => import(/* webpackChunkName: "boards" */ '../views/InfoView.vue'),
+    props: (route) => ({ boardId: route.params.boardId, query: route.query })
   },
   {
     path: '/board/free/write/',

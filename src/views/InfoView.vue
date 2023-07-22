@@ -39,7 +39,8 @@
     <table>
       <td class="buttons" colspan="4">
         <button @click="list">목록</button>
-        <router-link to="/board/free/modify">
+        <router-link
+            :to="{path: '/board/free/modify', query: this.$route.query}">
           <button>수정</button>
         </router-link>
         <button v-on:click="modalOpen = true">삭제</button>
@@ -98,7 +99,7 @@ export default {
     },
     postComment() {
       axios
-          .post(`http://localhost:8080/api/v1/boards/free/view/${this.boardId}/comments`, this.comment)
+          .post(`http://localhost:8080/api/v1/boards/free/view/${this.boardData.boardId}/comments`, this.comment)
           .then((response) => {
             if (response.status === 201) {
               this.getData();
@@ -144,16 +145,17 @@ export default {
     list() {
       this.$store.commit('setBoardData', {});
 
-      this.$router.push({name: 'ListView'});
+      this.$router.push({name: 'ListView', query: this.$route.query});
     },
     deleteBoard() {
       axios
-          .delete(`http://localhost:8080/api/v1/board/free/delete/${this.boardData.boardId}`,{
-            params: {password: this.inputPassword}})
+          .delete(`http://localhost:8080/api/v1/board/free/delete/${this.boardData.boardId}`, {
+            params: {password: this.inputPassword}
+          })
           .then((response) => {
             console.log(response.status)
             if (response.status === 200) {
-              this.$router.push({name: 'ListView'});
+              this.$router.push({name: 'ListView', query: this.$route.query});
             }
           })
           .catch((error) => {

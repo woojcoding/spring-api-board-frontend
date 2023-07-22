@@ -1,6 +1,6 @@
 <template>
   <nav>
-    <router-link to="/boards/free/list">BoardList</router-link>
+    <router-link to="/boards/free/list">목록</router-link>
   </nav>
   <router-view/>
 </template>

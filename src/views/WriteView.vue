@@ -58,7 +58,8 @@
         <tr>
           <td colspan="3" class="button">
             <div class="button-left">
-              <router-link to="/boards/free/list">
+              <router-link
+                  :to="{path:'/boards/free/list',query: this.$route.query}">
                 <button>취소</button>
               </router-link>
             </div>
@@ -143,7 +144,11 @@ export default {
             if (response.status === 201) {
               const boardId = response.data;
 
-              this.$router.push({name: 'InfoView', params: {boardId: boardId}});
+              this.$router.push({
+                name: 'InfoView',
+                params: {boardId: boardId},
+                query: this.$route.query
+              });
             }
           })
           .catch((error) => {
